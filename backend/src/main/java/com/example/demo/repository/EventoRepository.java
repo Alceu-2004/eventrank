@@ -1,5 +1,8 @@
 package com.example.demo.repository;
 
-public class EventoRepository {
-    
+import com.example.demo.model.Evento;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface EventoRepository extends JpaRepository<Evento, Long> {
+    Evento findByNome(String nome);
 }
