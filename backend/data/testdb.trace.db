@@ -1,6 +1,0 @@
-2025-09-17 09:22:15.352299-03:00 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "USUARIO" not found (this database is empty); SQL statement:
-INSERT INTO usuario (id, nome, email) VALUES (1, 'Alice', 'alice@email.com') [42104-232]
-2025-09-17 09:25:13.473683-03:00 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "USUARIOS" not found (this database is empty); SQL statement:
-INSERT INTO usuarios (id, nome, email) VALUES (1, 'Alice', 'alice@email.com') [42104-232]
