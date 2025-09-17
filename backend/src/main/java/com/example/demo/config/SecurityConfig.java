@@ -11,12 +11,14 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable()) 
-            .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin())) 
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/h2-console/**").permitAll() 
+                .requestMatchers("/h2-console/**").permitAll()
+                .requestMatchers("/usuarios/**").authenticated()
                 .anyRequest().authenticated()
             )
-            .formLogin(form -> form.defaultSuccessUrl("/eventos", true));
+            .httpBasic(httpBasic -> {})
+            .formLogin(form -> form.disable())
+            .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
 
         return http.build();
     }
