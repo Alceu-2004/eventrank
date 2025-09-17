@@ -16,7 +16,7 @@ public class SecurityConfig {
                 .requestMatchers("/h2-console/**").permitAll() 
                 .anyRequest().authenticated()
             )
-            .formLogin(form -> form.defaultSuccessUrl("/", true));
+            .formLogin(form -> form.defaultSuccessUrl("/eventos", true));
 
         return http.build();
     }
