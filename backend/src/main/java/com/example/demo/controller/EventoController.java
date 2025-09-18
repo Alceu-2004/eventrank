@@ -1,37 +1,48 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.Evento;
-import com.example.demo.repository.EventoRepository;
-
+import com.example.demo.dto.EventoDto;
+import com.example.demo.service.EventoService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
 @RequestMapping("/eventos")
 public class EventoController {
 
-    private final EventoRepository repository;
+    private final EventoService service;
 
-    public EventoController(EventoRepository repository) {
-        this.repository = repository;
+    public EventoController(EventoService service) {
+        this.service = service;
     }
 
     @PostMapping
-    public Evento criar(@RequestBody Evento evento) {
-        return repository.save(evento);
+    public ResponseEntity<EventoDto> criar(@Valid @RequestBody EventoDto dto) {
+        EventoDto criado = service.criar(dto);
+        return ResponseEntity.created(URI.create("/eventos/" + criado.getId())).body(criado);
     }
 
     @GetMapping
-    public List<Evento> listar() {
-        return repository.findAll();
+    public ResponseEntity<List<EventoDto>> listar() {
+        return ResponseEntity.ok(service.listar());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Evento> buscar(@PathVariable Long id) {
-        return repository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-}
+    public ResponseEntity<EventoDto> buscar(@PathVariable Long id) {
+        return ResponseEntity.ok(service.buscarPorId(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<EventoDto> atualizar(@PathVariable Long id, @Valid @RequestBody EventoDto dto) {
+        return ResponseEntity.ok(service.atualizar(id, dto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        service.deletar(id);
+        return ResponseEntity.noContent().build();
+    }
 }
