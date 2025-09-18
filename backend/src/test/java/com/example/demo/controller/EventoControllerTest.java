@@ -14,6 +14,7 @@ import java.util.Collections;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 
 @WebMvcTest(EventoController.class)
 class EventoControllerTest {
@@ -36,9 +37,9 @@ class EventoControllerTest {
     void listar_deveRetornarOkEListaVazia() throws Exception {
         Mockito.when(service.listar()).thenReturn(Collections.emptyList());
 
-        mockMvc.perform(get("/eventos"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("[]"));
+        mockMvc.perform(get("/eventos").with(httpBasic("admin", "1234")))
+       .andExpect(status().isOk())
+       .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+       .andExpect(content().json("[]"));
     }
 }
