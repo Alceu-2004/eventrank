@@ -2,6 +2,8 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Evento;
 import com.example.demo.repository.EventoRepository;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,4 +27,11 @@ public class EventoController {
     public List<Evento> listar() {
         return repository.findAll();
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Evento> buscar(@PathVariable Long id) {
+        return repository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+}
 }
