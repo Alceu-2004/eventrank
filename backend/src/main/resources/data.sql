@@ -1,9 +1,12 @@
 -- Usuários iniciais
 INSERT INTO usuarios (nome, email, senha, data_criacao) 
-VALUES ('Alice', 'alice@email.com', '1234', CURRENT_TIMESTAMP);
+VALUES ('Alice', 'alice@email.com', '$2a$10$6edf.Y9vLLdxjr3PaSxM3e56S3Tb0/93iaSaI3aHgCmCjfzR0fTPS', CURRENT_TIMESTAMP);
 
 INSERT INTO usuarios (nome, email, senha, data_criacao) 
-VALUES ('Bob', 'bob@email.com', 'abcd', CURRENT_TIMESTAMP);
+VALUES ('Bob', 'bob@email.com', '$2a$10$Q4rxHz57grX82b4GIEUidukzF/Pc5oPJ1QunsKcLF14MWsdR6i2aq', CURRENT_TIMESTAMP);
+
+INSERT INTO usuarios (nome, email, senha, data_criacao) 
+VALUES ('Admin', 'admin@email.com', '$2a$10$BwR1OGCmpnr2HYWIXep.5.5oOM//ESfHF42OI0uIyoOpyLMmlXs8K', CURRENT_TIMESTAMP);
 
 -- Eventos iniciais
 INSERT INTO eventos (nome, descricao, data_evento, local) 
