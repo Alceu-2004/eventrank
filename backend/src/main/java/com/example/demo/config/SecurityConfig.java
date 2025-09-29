@@ -46,17 +46,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
+            .csrf(csrf -> csrf.disable()) 
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login/**").permitAll()
-                .requestMatchers("/usuarios/**").authenticated()
-                .anyRequest().permitAll()
+                .requestMatchers("/login/**").permitAll()            
+                .requestMatchers("/usuarios/**").authenticated()  
+                .anyRequest().authenticated()                    
             )
-            .httpBasic(httpBasic -> {})
-            .formLogin(form -> form.disable())
-            .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
+            .httpBasic(httpBasic -> {})                           
+            .formLogin(form -> form.disable())                    
+            .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin())) 
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); 
         return http.build();
     }
 }
