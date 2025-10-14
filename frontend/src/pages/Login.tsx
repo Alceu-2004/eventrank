@@ -1,17 +1,31 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../services/api";
 
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email && senha) {
-      navigate("/dashboard");
-    } else {
+    if (!email || !senha) {
       alert("Preencha todos os campos!");
+      return;
+    }
+
+    try {
+      const response = await api.post("/login", {
+        email: email,
+        senha: senha,
+      });
+
+      const token = response.data.token;
+      localStorage.setItem("token", token);
+      navigate("/dashboard");
+    } catch (error) {
+      alert("Email ou senha incorretos");
+      console.error(error);
     }
   };
 
@@ -27,7 +41,7 @@ const Login = () => {
           onChange={(e) => setEmail(e.target.value)}
         />
         <input
-          type="password"
+          type="senha"
           placeholder="Senha"
           className="border p-2 rounded"
           value={senha}
