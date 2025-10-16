@@ -1,39 +1,164 @@
-import React, { useEffect, useState } from "react";
-import api from "../services/api";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
-interface Event {
+interface Usuario {
   id: number;
   nome: string;
-  data: string;
 }
 
-const Dashboard: React.FC = () => {
-  const [events, setEvents] = useState<Event[]>([]);
+interface Avaliacao {
+  id: number;
+  comentario: string;
+  nota: number;
+  usuario: Usuario | null;
+}
+
+interface Evento {
+  id: number;
+  nome: string;
+}
+
+const Dashboard = () => {
+  const [eventos, setEventos] = useState<Evento[]>([]);
+  const [selecionado, setSelecionado] = useState<Evento | null>(null);
+  const [avaliacoes, setAvaliacoes] = useState<Avaliacao[]>([]);
+  const [comentario, setComentario] = useState("");
+  const [nota, setNota] = useState(5);
+  const [loading, setLoading] = useState(false);
+  const [erro, setErro] = useState("");
+
+  const token = localStorage.getItem("token");
+
+  const carregarEventos = async () => {
+    try {
+      const res = await axios.get("http://localhost:8080/eventos", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setEventos(res.data);
+    } catch (err) {
+      console.error("Erro ao carregar eventos:", err);
+      setErro("Não foi possível carregar os eventos.");
+    }
+  };
+
+  const carregarAvaliacoes = async (eventoId: number) => {
+    try {
+      const res = await axios.get(`http://localhost:8080/avaliacoes/${eventoId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setAvaliacoes(res.data);
+    } catch (err) {
+      console.error("Erro ao carregar avaliações:", err);
+      setErro("Não foi possível carregar as avaliações.");
+    }
+  };
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await api.get("/eventos", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setEvents(response.data);
-      } catch (error) {
-        console.error("Erro ao buscar eventos", error);
-      }
-    };
-
-    fetchEvents();
+    carregarEventos();
   }, []);
 
+  useEffect(() => {
+    if (selecionado) {
+      carregarAvaliacoes(selecionado.id);
+    }
+  }, [selecionado]);
+
+  const enviarAvaliacao = async () => {
+    if (!selecionado) return;
+    setLoading(true);
+    setErro("");
+
+    try {
+      await axios.post(
+        `http://localhost:8080/avaliacoes/${selecionado.id}`,
+        { comentario, nota },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setComentario("");
+      setNota(5);
+      carregarAvaliacoes(selecionado.id);
+    } catch (err: any) {
+      console.error("Erro ao enviar avaliação:", err);
+      setErro(err.response?.data?.message || "Erro ao enviar avaliação.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const voltarLista = () => {
+    setSelecionado(null);
+    setAvaliacoes([]);
+    setComentario("");
+    setNota(5);
+    setErro("");
+  };
+
   return (
-    <div>
-      <h1>Dashboard</h1>
-      <ul>
-        {events.map((event) => (
-          <li key={event.id}>{event.nome} — {event.data}</li>
-        ))}
-      </ul>
+    <div className="p-4">
+      <h1 className="text-2xl mb-4">Eventos</h1>
+
+      {erro && <p className="text-red-600 mb-2">{erro}</p>}
+
+      {!selecionado ? (
+        <ul>
+          {eventos.map((e) => (
+            <li
+              key={e.id}
+              className="cursor-pointer mb-1 hover:text-blue-600"
+              onClick={() => setSelecionado(e)}
+            >
+              {e.nome}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div className="mt-6">
+          <button
+            onClick={voltarLista}
+            className="mb-2 text-blue-600 underline"
+          >
+            ← Voltar para eventos
+          </button>
+          <h2 className="text-xl mb-2">Avaliações de {selecionado.nome}</h2>
+
+          {avaliacoes.length > 0 ? (
+            <ul>
+              {avaliacoes.map((a) => (
+                <li key={a.id} className="mb-1">
+                  <strong>{a.usuario?.nome || "Usuário Desconhecido"}:</strong> {a.comentario} ({a.nota}/5)
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mb-2">Nenhuma avaliação ainda.</p>
+          )}
+
+          <div className="mt-4">
+            <textarea
+              value={comentario}
+              onChange={(e) => setComentario(e.target.value)}
+              placeholder="Escreva sua avaliação"
+              className="border p-2 w-full mb-2"
+            />
+            <input
+              type="number"
+              value={nota}
+              onChange={(e) => setNota(Number(e.target.value))}
+              min={1}
+              max={5}
+              className="border p-2 w-20 mb-2"
+            />
+            <button
+              onClick={enviarAvaliacao}
+              className="bg-blue-600 text-white p-2 rounded"
+              disabled={loading}
+            >
+              {loading ? "Enviando..." : "Enviar Avaliação"}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

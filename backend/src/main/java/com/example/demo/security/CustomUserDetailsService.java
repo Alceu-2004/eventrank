@@ -2,12 +2,10 @@ package com.example.demo.security;
 
 import com.example.demo.model.Usuario;
 import com.example.demo.repository.UsuarioRepository;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import java.util.Collections;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -23,9 +21,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         Usuario usuario = usuarioRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
 
-        return User.withUsername(usuario.getEmail())
-           .password(usuario.getSenha())
-           .authorities(Collections.emptyList())
-           .build();
+        return new CustomUserDetails(usuario);
     }
 }
