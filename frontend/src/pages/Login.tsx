@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
+import CenteredLayout from "../components/CenteredLayout";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -15,11 +16,7 @@ const Login = () => {
     }
 
     try {
-      const response = await api.post("/login", {
-        email: email,
-        senha: senha,
-      });
-
+      const response = await api.post("/login", { email, senha });
       const token = response.data.token;
       localStorage.setItem("token", token);
       navigate("/dashboard");
@@ -30,37 +27,39 @@ const Login = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <h1 className="text-3xl mb-4">Login</h1>
-      <form onSubmit={handleLogin} className="flex flex-col gap-2 w-64">
-        <input
-          type="email"
-          placeholder="Email"
-          className="border p-2 rounded"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="senha"
-          placeholder="Senha"
-          className="border p-2 rounded"
-          value={senha}
-          onChange={(e) => setSenha(e.target.value)}
-        />
+    <CenteredLayout>
+      <div className="flex flex-col items-center">
+        <h1 className="text-3xl mb-4">Login</h1>
+        <form onSubmit={handleLogin} className="flex flex-col gap-2 max-w-xs mx-auto">
+          <input
+            type="email"
+            placeholder="Email"
+            className="border p-2 rounded"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <input
+            type="password"
+            placeholder="Senha"
+            className="border p-2 rounded"
+            value={senha}
+            onChange={(e) => setSenha(e.target.value)}
+          />
+          <button
+            type="submit"
+            className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
+          >
+            Entrar
+          </button>
+        </form>
         <button
-          type="submit"
-          className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
+          onClick={() => navigate("/cadastro")}
+          className="mt-4 text-blue-600 underline"
         >
-          Entrar
+          Criar conta
         </button>
-      </form>
-      <button
-        onClick={() => navigate("/cadastro")}
-        className="mt-4 text-blue-600 underline"
-      >
-        Criar conta
-      </button>
-    </div>
+      </div>
+    </CenteredLayout>
   );
 };
 
