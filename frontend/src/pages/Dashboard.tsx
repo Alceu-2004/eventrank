@@ -16,6 +16,8 @@ interface Avaliacao {
 interface Evento {
   id: number;
   nome: string;
+  descricao?: string;
+  local?: string;
 }
 
 const Dashboard = () => {
@@ -95,70 +97,86 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl mb-4">Eventos</h1>
+    <div className="p-6 flex flex-col items-center justify-center min-h-screen bg-gray-50">
+      <div className="bg-white shadow-md rounded-2xl p-6 w-full max-w-2xl">
+        <h1 className="text-2xl font-bold mb-4 text-center">Eventos</h1>
 
-      {erro && <p className="text-red-600 mb-2">{erro}</p>}
+        {erro && <p className="text-red-600 mb-2">{erro}</p>}
 
-      {!selecionado ? (
-        <ul>
-          {eventos.map((e) => (
-            <li
-              key={e.id}
-              className="cursor-pointer mb-1 hover:text-blue-600"
-              onClick={() => setSelecionado(e)}
-            >
-              {e.nome}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <div className="mt-6">
-          <button
-            onClick={voltarLista}
-            className="mb-2 text-blue-600 underline"
-          >
-            ← Voltar para eventos
-          </button>
-          <h2 className="text-xl mb-2">Avaliações de {selecionado.nome}</h2>
-
-          {avaliacoes.length > 0 ? (
-            <ul>
-              {avaliacoes.map((a) => (
-                <li key={a.id} className="mb-1">
-                  <strong>{a.usuario?.nome || "Usuário Desconhecido"}:</strong> {a.comentario} ({a.nota}/5)
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="mb-2">Nenhuma avaliação ainda.</p>
-          )}
-
-          <div className="mt-4">
-            <textarea
-              value={comentario}
-              onChange={(e) => setComentario(e.target.value)}
-              placeholder="Escreva sua avaliação"
-              className="border p-2 w-full mb-2"
-            />
-            <input
-              type="number"
-              value={nota}
-              onChange={(e) => setNota(Number(e.target.value))}
-              min={1}
-              max={5}
-              className="border p-2 w-20 mb-2"
-            />
+        {!selecionado ? (
+          <ul>
+            {eventos.map((e) => (
+              <li
+                key={e.id}
+                className="cursor-pointer mb-2 p-3 border rounded hover:bg-blue-50 hover:text-blue-700 transition"
+                onClick={() => setSelecionado(e)}
+              >
+                {e.nome}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div>
             <button
-              onClick={enviarAvaliacao}
-              className="bg-blue-600 text-white p-2 rounded"
-              disabled={loading}
+              onClick={voltarLista}
+              className="mb-3 text-blue-600 underline"
             >
-              {loading ? "Enviando..." : "Enviar Avaliação"}
+              ← Voltar para eventos
             </button>
+
+            <h2 className="text-xl font-semibold mb-2">{selecionado.nome}</h2>
+
+            {/* Exibe descrição do evento */}
+            {selecionado.descricao ? (
+              <p className="text-gray-700 mb-4">{selecionado.descricao}</p>
+            ) : (
+              <p className="text-gray-400 mb-4 italic">
+                Nenhuma descrição disponível para este evento.
+              </p>
+            )}
+
+            {/* Exibe avaliações */}
+            <h3 className="text-lg font-semibold mb-2">Avaliações:</h3>
+            {avaliacoes.length > 0 ? (
+              <ul>
+                {avaliacoes.map((a) => (
+                  <li key={a.id} className="mb-1">
+                    <strong>{a.usuario?.nome || "Usuário Desconhecido"}:</strong>{" "}
+                    {a.comentario} ({a.nota}/5)
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mb-2">Nenhuma avaliação ainda.</p>
+            )}
+
+            {/* Formulário de nova avaliação */}
+            <div className="mt-4">
+              <textarea
+                value={comentario}
+                onChange={(e) => setComentario(e.target.value)}
+                placeholder="Escreva sua avaliação"
+                className="border p-2 w-full mb-2 rounded"
+              />
+              <input
+                type="number"
+                value={nota}
+                onChange={(e) => setNota(Number(e.target.value))}
+                min={1}
+                max={5}
+                className="border p-2 w-20 mb-2 rounded"
+              />
+              <button
+                onClick={enviarAvaliacao}
+                className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition"
+                disabled={loading}
+              >
+                {loading ? "Enviando..." : "Enviar Avaliação"}
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
