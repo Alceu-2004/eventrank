@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import CenteredLayout from "../components/CenteredLayout";
 
@@ -29,13 +30,14 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState("");
 
-  const token = localStorage.getItem("token");
+  const navigate = useNavigate();
+
+  // Função para pegar o token do sessionStorage
+  const getToken = () => sessionStorage.getItem("token");
 
   const carregarEventos = async () => {
     try {
-      const res = await axios.get("http://localhost:8080/eventos", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axios.get("http://localhost:8080/eventos");
       setEventos(res.data);
     } catch (err) {
       console.error("Erro ao carregar eventos:", err);
@@ -45,9 +47,12 @@ const Dashboard = () => {
 
   const carregarAvaliacoes = async (eventoId: number) => {
     try {
-      const res = await axios.get(`http://localhost:8080/avaliacoes/${eventoId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const token = getToken();
+      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      const res = await axios.get(
+        `http://localhost:8080/avaliacoes/${eventoId}`,
+        { headers }
+      );
       setAvaliacoes(res.data);
     } catch (err) {
       console.error("Erro ao carregar avaliações:", err);
@@ -64,7 +69,16 @@ const Dashboard = () => {
   }, [selecionado]);
 
   const enviarAvaliacao = async () => {
+    const token = getToken();
+
+    if (!token) {
+      alert("Você precisa estar logado para enviar uma avaliação!");
+      navigate("/login");
+      return;
+    }
+
     if (!selecionado) return;
+
     setLoading(true);
     setErro("");
 
@@ -74,6 +88,7 @@ const Dashboard = () => {
         { comentario, nota },
         { headers: { Authorization: `Bearer ${token}` } }
       );
+
       setComentario("");
       setNota(5);
       carregarAvaliacoes(selecionado.id);
@@ -95,7 +110,7 @@ const Dashboard = () => {
 
   return (
     <CenteredLayout>
-      <div className="max-w-3xl">
+      <div className="max-w-3xl w-full">
         <h1 className="text-2xl mb-4">Eventos</h1>
 
         {erro && <p className="text-red-600 mb-2">{erro}</p>}
@@ -129,7 +144,8 @@ const Dashboard = () => {
               <ul>
                 {avaliacoes.map((a) => (
                   <li key={a.id} className="mb-1">
-                    <strong>{a.usuario?.nome || "Usuário Desconhecido"}:</strong> {a.comentario} ({a.nota}/5)
+                    <strong>{a.usuario?.nome || "Usuário Desconhecido"}:</strong>{" "}
+                    {a.comentario} ({a.nota}/5)
                   </li>
                 ))}
               </ul>
