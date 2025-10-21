@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import CenteredLayout from "../components/CenteredLayout";
 
 interface Usuario {
   id: number;
@@ -17,7 +18,6 @@ interface Evento {
   id: number;
   nome: string;
   descricao?: string;
-  local?: string;
 }
 
 const Dashboard = () => {
@@ -60,9 +60,7 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    if (selecionado) {
-      carregarAvaliacoes(selecionado.id);
-    }
+    if (selecionado) carregarAvaliacoes(selecionado.id);
   }, [selecionado]);
 
   const enviarAvaliacao = async () => {
@@ -76,7 +74,6 @@ const Dashboard = () => {
         { comentario, nota },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
       setComentario("");
       setNota(5);
       carregarAvaliacoes(selecionado.id);
@@ -97,9 +94,9 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="p-6 flex flex-col items-center justify-center min-h-screen bg-gray-50">
-      <div className="bg-white shadow-md rounded-2xl p-6 w-full max-w-2xl">
-        <h1 className="text-2xl font-bold mb-4 text-center">Eventos</h1>
+    <CenteredLayout>
+      <div className="max-w-3xl">
+        <h1 className="text-2xl mb-4">Eventos</h1>
 
         {erro && <p className="text-red-600 mb-2">{erro}</p>}
 
@@ -108,7 +105,7 @@ const Dashboard = () => {
             {eventos.map((e) => (
               <li
                 key={e.id}
-                className="cursor-pointer mb-2 p-3 border rounded hover:bg-blue-50 hover:text-blue-700 transition"
+                className="cursor-pointer mb-1 hover:text-blue-600"
                 onClick={() => setSelecionado(e)}
               >
                 {e.nome}
@@ -116,33 +113,23 @@ const Dashboard = () => {
             ))}
           </ul>
         ) : (
-          <div>
+          <div className="mt-6">
             <button
               onClick={voltarLista}
-              className="mb-3 text-blue-600 underline"
+              className="mb-2 text-blue-600 underline"
             >
               ← Voltar para eventos
             </button>
-
-            <h2 className="text-xl font-semibold mb-2">{selecionado.nome}</h2>
-
-            {/* Exibe descrição do evento */}
-            {selecionado.descricao ? (
-              <p className="text-gray-700 mb-4">{selecionado.descricao}</p>
-            ) : (
-              <p className="text-gray-400 mb-4 italic">
-                Nenhuma descrição disponível para este evento.
-              </p>
+            <h2 className="text-xl mb-2">Avaliações de {selecionado.nome}</h2>
+            {selecionado.descricao && (
+              <p className="mb-4 text-gray-700">{selecionado.descricao}</p>
             )}
 
-            {/* Exibe avaliações */}
-            <h3 className="text-lg font-semibold mb-2">Avaliações:</h3>
             {avaliacoes.length > 0 ? (
               <ul>
                 {avaliacoes.map((a) => (
                   <li key={a.id} className="mb-1">
-                    <strong>{a.usuario?.nome || "Usuário Desconhecido"}:</strong>{" "}
-                    {a.comentario} ({a.nota}/5)
+                    <strong>{a.usuario?.nome || "Usuário Desconhecido"}:</strong> {a.comentario} ({a.nota}/5)
                   </li>
                 ))}
               </ul>
@@ -150,13 +137,12 @@ const Dashboard = () => {
               <p className="mb-2">Nenhuma avaliação ainda.</p>
             )}
 
-            {/* Formulário de nova avaliação */}
             <div className="mt-4">
               <textarea
                 value={comentario}
                 onChange={(e) => setComentario(e.target.value)}
                 placeholder="Escreva sua avaliação"
-                className="border p-2 w-full mb-2 rounded"
+                className="border p-2 w-full mb-2"
               />
               <input
                 type="number"
@@ -164,11 +150,11 @@ const Dashboard = () => {
                 onChange={(e) => setNota(Number(e.target.value))}
                 min={1}
                 max={5}
-                className="border p-2 w-20 mb-2 rounded"
+                className="border p-2 w-20 mb-2"
               />
               <button
                 onClick={enviarAvaliacao}
-                className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition"
+                className="bg-blue-600 text-white p-2 rounded"
                 disabled={loading}
               >
                 {loading ? "Enviando..." : "Enviar Avaliação"}
@@ -177,7 +163,7 @@ const Dashboard = () => {
           </div>
         )}
       </div>
-    </div>
+    </CenteredLayout>
   );
 };
 
