@@ -14,6 +14,7 @@ public class Evento {
     @Column(nullable = false)
     private String nome;
 
+    @Column(length = 500)
     private String descricao;
 
     @Column(name = "data_evento", nullable = false)
