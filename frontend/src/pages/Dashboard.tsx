@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import CenteredLayout from "../components/CenteredLayout";
+import { Search } from "lucide-react";
 
 interface Usuario {
   id: number;
@@ -29,11 +30,9 @@ const Dashboard = () => {
   const [nota, setNota] = useState(5);
   const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState("");
+  const [filtro, setFiltro] = useState("");
 
   const navigate = useNavigate();
-
-  // Função para pegar o token do sessionStorage
-  const getToken = () => sessionStorage.getItem("token");
 
   const carregarEventos = async () => {
     try {
@@ -47,7 +46,7 @@ const Dashboard = () => {
 
   const carregarAvaliacoes = async (eventoId: number) => {
     try {
-      const token = getToken();
+      const token = sessionStorage.getItem("token");
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
       const res = await axios.get(
         `http://localhost:8080/avaliacoes/${eventoId}`,
@@ -69,7 +68,7 @@ const Dashboard = () => {
   }, [selecionado]);
 
   const enviarAvaliacao = async () => {
-    const token = getToken();
+    const token = sessionStorage.getItem("token");
 
     if (!token) {
       alert("Você precisa estar logado para enviar uma avaliação!");
@@ -108,6 +107,10 @@ const Dashboard = () => {
     setErro("");
   };
 
+  const eventosFiltrados = eventos.filter((e) =>
+    e.nome.toLowerCase().includes(filtro.toLowerCase())
+  );
+
   return (
     <CenteredLayout>
       <div className="max-w-3xl w-full">
@@ -116,17 +119,31 @@ const Dashboard = () => {
         {erro && <p className="text-red-600 mb-2">{erro}</p>}
 
         {!selecionado ? (
-          <ul>
-            {eventos.map((e) => (
-              <li
-                key={e.id}
-                className="cursor-pointer mb-1 hover:text-blue-600"
-                onClick={() => setSelecionado(e)}
-              >
-                {e.nome}
-              </li>
-            ))}
-          </ul>
+          <>
+            {/* Barra de pesquisa */}
+            <div className="flex items-center mb-4">
+              <Search className="mr-2" size={20} />
+              <input
+                type="text"
+                placeholder="Pesquisar eventos..."
+                value={filtro}
+                onChange={(e) => setFiltro(e.target.value)}
+                className="border p-2 rounded w-full"
+              />
+            </div>
+
+            <ul>
+              {eventosFiltrados.map((e) => (
+                <li
+                  key={e.id}
+                  className="cursor-pointer mb-1 hover:text-blue-600"
+                  onClick={() => setSelecionado(e)}
+                >
+                  {e.nome}
+                </li>
+              ))}
+            </ul>
+          </>
         ) : (
           <div className="mt-6">
             <button
