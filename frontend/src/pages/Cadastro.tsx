@@ -38,7 +38,12 @@ const Cadastro = () => {
       const response = await axios.post("http://localhost:8080/usuarios", { nome, email, senha });
       if (response.status === 201 || response.status === 200) {
         alert("Cadastro realizado com sucesso!");
-        navigate("/");
+
+        // Opcional: se quiser logar automaticamente após cadastro
+        const tokenResponse = await axios.post("http://localhost:8080/login", { email, senha });
+        sessionStorage.setItem("token", tokenResponse.data.token);
+
+        navigate("/dashboard");
       }
     } catch (error: any) {
       console.error("Erro ao cadastrar:", error);
