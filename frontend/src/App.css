@@ -1,13 +1,17 @@
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
   margin: 0;
   padding: 0;
 }
 
+/* Centraliza o conteúdo principal abaixo do header */
 #root {
   display: flex;
-  justify-content: center; 
-  align-items: center;    
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
   width: 100%;
 }
 
@@ -17,9 +21,11 @@ html, body, #root {
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }

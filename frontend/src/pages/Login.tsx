@@ -18,9 +18,10 @@ const Login = () => {
     try {
       const response = await api.post("/login", { email, senha });
       const token = response.data.token;
+      const nomeUsuario = response.data.nome;
 
-      // Usando sessionStorage ao invés de localStorage
       sessionStorage.setItem("token", token);
+      sessionStorage.setItem("nomeUsuario", nomeUsuario);
 
       navigate("/dashboard");
     } catch (error) {

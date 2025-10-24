@@ -1,4 +1,3 @@
-import React from "react";
 import type { ReactNode } from "react";
 
 interface CenteredLayoutProps {
@@ -7,8 +6,8 @@ interface CenteredLayoutProps {
 
 const CenteredLayout = ({ children }: CenteredLayoutProps) => {
   return (
-    <div className="flex items-center justify-center w-full h-screen">
-      {children}
+    <div className="flex justify-center w-full min-h-screen pt-[80px] pb-6">
+      <div className="w-full max-w-6xl px-4">{children}</div>
     </div>
   );
 };
