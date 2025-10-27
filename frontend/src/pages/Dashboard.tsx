@@ -135,10 +135,9 @@ const Dashboard = () => {
   return (
     <div className="w-full">
       {/* HEADER */}
-      <header className="bg-blue-600 text-white flex justify-between items-center p-4 fixed top-0 left-0 w-full z-50 shadow-md">
-        {/* Logo */}
+      <header className="header">
         <div
-          className="text-lg font-bold cursor-pointer"
+          className="logo"
           onClick={() => {
             voltarLista();
             setMenuAberto(false);
@@ -147,21 +146,18 @@ const Dashboard = () => {
           EventRank
         </div>
 
-        {/* Botão e menu lateral dentro do header */}
-        <div className="relative flex items-center" ref={menuRef}>
-          {/* Botão de menu */}
+        <div className="menu-container" ref={menuRef}>
           <button
             onClick={() => setMenuAberto(!menuAberto)}
-            className="p-2 rounded hover:bg-blue-500 transition-all duration-200"
+            className="menu-button"
           >
             <Menu size={24} />
           </button>
 
-          {/* Menu suspenso — renderizado só quando menuAberto for true */}
           {menuAberto && (
-            <div className="absolute right-0 top-full mt-2 bg-white text-black rounded shadow-lg flex flex-col py-2 w-32 animate-fade-in z-50">
+            <div className="menu-dropdown">
               <span
-                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                className="menu-item"
                 onClick={() => {
                   voltarLista();
                   setMenuAberto(false);
@@ -172,7 +168,7 @@ const Dashboard = () => {
 
               {!usuarioLogado ? (
                 <span
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                  className="menu-item"
                   onClick={() => {
                     navigate("/login");
                     setMenuAberto(false);
@@ -181,10 +177,7 @@ const Dashboard = () => {
                   Login
                 </span>
               ) : (
-                <span
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={logout}
-                >
+                <span className="menu-item" onClick={logout}>
                   Sair
                 </span>
               )}
@@ -227,15 +220,10 @@ const Dashboard = () => {
             </>
           ) : (
             <div className="mt-6">
-              <button
-                onClick={voltarLista}
-                className="mb-2 text-blue-600 underline"
-              >
+              <button onClick={voltarLista} className="mb-2 text-blue-600 underline">
                 ← Voltar para eventos
               </button>
-              <h2 className="text-xl mb-2">
-                Avaliações de {selecionado.nome}
-              </h2>
+              <h2 className="text-xl mb-2">Avaliações de {selecionado.nome}</h2>
               {selecionado.descricao && (
                 <p className="mb-4 text-gray-700">{selecionado.descricao}</p>
               )}
