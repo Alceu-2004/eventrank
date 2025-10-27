@@ -135,67 +135,63 @@ const Dashboard = () => {
   return (
     <div className="w-full">
       {/* HEADER */}
-          <header className="bg-blue-600 text-white flex justify-between items-center p-4 fixed top-0 left-0 w-full z-50 shadow-md">
-      {/* Logo */}
-      <div
-        className="text-lg font-bold cursor-pointer"
-        onClick={() => {
-          voltarLista();
-          setMenuAberto(false);
-        }}
-      >
-        EventRank
-      </div>
-
-      {/* Botão e menu lateral dentro do header */}
-      <div className="relative flex items-center" ref={menuRef}>
-        {/* Botão de menu */}
-        <button
-          onClick={() => setMenuAberto(!menuAberto)}
-          className={`p-2 rounded hover:bg-blue-500 transition-transform duration-300 ${
-            menuAberto ? "-translate-x-16" : "translate-x-0"
-          }`}
+      <header className="bg-blue-600 text-white flex justify-between items-center p-4 fixed top-0 left-0 w-full z-50 shadow-md">
+        {/* Logo */}
+        <div
+          className="text-lg font-bold cursor-pointer"
+          onClick={() => {
+            voltarLista();
+            setMenuAberto(false);
+          }}
         >
-          <Menu size={24} />
-        </button>
+          EventRank
+        </div>
 
-        {/* Menu que aparece à direita do botão */}
-        {menuAberto && (
-          <div
-            className="absolute top-1/2 -translate-y-1/2 left-full ml-4 bg-white text-black rounded shadow-lg flex flex-col py-2 w-32 animate-slide-down z-50"
+        {/* Botão e menu lateral dentro do header */}
+        <div className="relative flex items-center" ref={menuRef}>
+          {/* Botão de menu */}
+          <button
+            onClick={() => setMenuAberto(!menuAberto)}
+            className="p-2 rounded hover:bg-blue-500 transition-all duration-200"
           >
-            <span
-              className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-              onClick={() => {
-                voltarLista();
-                setMenuAberto(false);
-              }}
-            >
-              Eventos
-            </span>
+            <Menu size={24} />
+          </button>
 
-            {!usuarioLogado ? (
+          {/* Menu suspenso — renderizado só quando menuAberto for true */}
+          {menuAberto && (
+            <div className="absolute right-0 top-full mt-2 bg-white text-black rounded shadow-lg flex flex-col py-2 w-32 animate-fade-in z-50">
               <span
                 className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                 onClick={() => {
-                  navigate("/login");
+                  voltarLista();
                   setMenuAberto(false);
                 }}
               >
-                Login
+                Eventos
               </span>
-            ) : (
-              <span
-                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                onClick={logout}
-              >
-                Sair
-              </span>
-            )}
-          </div>
-        )}
-      </div>
-    </header>
+
+              {!usuarioLogado ? (
+                <span
+                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                  onClick={() => {
+                    navigate("/login");
+                    setMenuAberto(false);
+                  }}
+                >
+                  Login
+                </span>
+              ) : (
+                <span
+                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                  onClick={logout}
+                >
+                  Sair
+                </span>
+              )}
+            </div>
+          )}
+        </div>
+      </header>
 
       {/* CONTEÚDO PRINCIPAL */}
       <CenteredLayout>
@@ -237,7 +233,9 @@ const Dashboard = () => {
               >
                 ← Voltar para eventos
               </button>
-              <h2 className="text-xl mb-2">Avaliações de {selecionado.nome}</h2>
+              <h2 className="text-xl mb-2">
+                Avaliações de {selecionado.nome}
+              </h2>
               {selecionado.descricao && (
                 <p className="mb-4 text-gray-700">{selecionado.descricao}</p>
               )}
