@@ -1,7 +1,7 @@
 # 🎤 EventRank
 
-**EventRank** é um sistema completo para **avaliação de artistas e eventos culturais**.  
-A plataforma permite que usuários realizem avaliações, comentários e consultem rankings com base nas notas atribuídas.  
+**EventRank** é um sistema completo para **avaliação de artistas e eventos culturais**.
+A plataforma permite que usuários realizem avaliações, comentários e consultem rankings com base nas notas atribuídas.
 
 Este é um projeto **fullstack**, desenvolvido com foco em **aprendizado prático e portfólio profissional**.
 
@@ -12,7 +12,7 @@ Este é um projeto **fullstack**, desenvolvido com foco em **aprendizado prátic
 ```bash
 eventrank/
 ├── backend/   # API REST com Spring Boot
-├── frontend/  # Interface web com React.js
+├── frontend/  # Interface web completa com React.js e TypeScript
 └── README.md  # Apresentação do projeto
 ```
 
@@ -20,10 +20,10 @@ eventrank/
 
 ## 🧠 Tecnologias Utilizadas
 
-- **Backend:** Java · Spring Boot · JPA · Flyway · PostgreSQL  
-- **DevOps:** Docker · Docker Compose  
-- **Ferramentas:** Maven · pgAdmin · Postman  
-- **Frontend (em desenvolvimento):** React.js · Axios · MUI
+* **Backend:** Java · Spring Boot · JPA · Flyway · PostgreSQL · JWT
+* **Frontend:** React.js · TypeScript · Axios · Lucide Icons · CSS customizado
+* **DevOps:** Docker · Docker Compose
+* **Ferramentas:** Maven · pgAdmin · Postman
 
 ---
 
@@ -31,10 +31,10 @@ eventrank/
 
 ### 🔧 Pré-requisitos
 
-- Docker & Docker Compose  
-- Java 23  
-- Maven  
-- Node.js (para o frontend, futuramente)
+* Docker & Docker Compose
+* Java 23
+* Maven
+* Node.js (para o frontend)
 
 ---
 
@@ -61,10 +61,37 @@ eventrank/
    docker-compose up -d
    ```
 
-   O backend estará disponível em:  
+   O backend estará disponível em:
    👉 `http://localhost:8080`
 
    As migrations do banco de dados são aplicadas automaticamente pelo **Flyway**.
+
+---
+
+### 🔹 Frontend
+
+1. Navegue até a pasta `frontend/`:
+
+   ```bash
+   cd frontend
+   ```
+
+2. Instale as dependências:
+
+   ```bash
+   npm install
+   ```
+
+3. Inicie a aplicação:
+
+   ```bash
+   npm start
+   ```
+
+   A interface web estará disponível em:
+   👉 `http://localhost:5173/`
+
+   A aplicação já está integrada com o backend.
 
 ---
 
@@ -72,22 +99,26 @@ eventrank/
 
 Se quiser gerenciar o banco de dados via pgAdmin:
 
-1. Configure o acesso ao PostgreSQL usando as variáveis definidas no `.env`.  
+1. Configure o acesso ao PostgreSQL usando as variáveis definidas no `.env`.
 2. Conecte-se ao host `localhost` e porta `5432`.
 
 ---
 
 ## 📈 Status do Projeto
 
-🟢 **Backend completo** — API REST funcional com PostgreSQL e Flyway  
-🟡 **Frontend em desenvolvimento** — será construído em React.js com integração à API  
+🟢 **Backend completo** — API REST funcional com PostgreSQL e Flyway
+🟢 **Frontend completo** — Interface web interativa em React + TypeScript integrada à API
 
 ---
 
-## 🧩 Próximos Passos
+## 🧩 Funcionalidades
 
-- Desenvolver a interface web (React.js)  
-
+* Cadastro e login de usuários com autenticação JWT
+* Avaliação e comentários de eventos
+* Consulta de eventos e rankings
+* Pesquisa e filtro de eventos
+* Menu dinâmico com opções de navegação
+* Dashboard de avaliações por evento
 
 ---
 
