@@ -1,69 +1,97 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
-import CenteredLayout from "../components/CenteredLayout";
 
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const [erro, setErro] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErro("");
+
     if (!email || !senha) {
-      alert("Preencha todos os campos!");
+      setErro("Preencha todos os campos.");
       return;
     }
 
+    setLoading(true);
     try {
       const response = await api.post("/login", { email, senha });
-      const token = response.data.token;
-      const nomeUsuario = response.data.nome;
-
-      sessionStorage.setItem("token", token);
-      sessionStorage.setItem("nomeUsuario", nomeUsuario);
-
+      sessionStorage.setItem("token", response.data.token);
+      sessionStorage.setItem("nomeUsuario", response.data.nome);
       navigate("/dashboard");
-    } catch (error) {
-      alert("Email ou senha incorretos");
-      console.error(error);
+    } catch {
+      setErro("E-mail ou senha incorretos.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <CenteredLayout>
-      <div className="flex flex-col items-center">
-        <h1 className="text-3xl mb-4">Login</h1>
-        <form onSubmit={handleLogin} className="flex flex-col gap-2 max-w-xs mx-auto">
-          <input
-            type="email"
-            placeholder="Email"
-            className="border p-2 rounded"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <input
-            type="password"
-            placeholder="Senha"
-            className="border p-2 rounded"
-            value={senha}
-            onChange={(e) => setSenha(e.target.value)}
-          />
+    <div className="auth-page">
+      <div className="auth-box fade-in">
+        <div className="auth-box__logo">
+          Event<span>Rank</span>
+        </div>
+        <p className="auth-box__subtitle">
+          Avalie eventos. Descubra os melhores.
+        </p>
+
+        <div className="divider" />
+
+        <p className="auth-box__title">Acesse sua conta</p>
+
+        {erro && <div className="error-msg">{erro}</div>}
+
+        <form onSubmit={handleLogin}>
+          <div className="form-group">
+            <div className="form-field">
+              <label className="form-label" htmlFor="email">E-mail</label>
+              <input
+                id="email"
+                type="email"
+                placeholder="voce@exemplo.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                autoComplete="email"
+              />
+            </div>
+
+            <div className="form-field">
+              <label className="form-label" htmlFor="senha">Senha</label>
+              <input
+                id="senha"
+                type="password"
+                placeholder="••••••••"
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}
+                autoComplete="current-password"
+              />
+            </div>
+          </div>
+
           <button
             type="submit"
-            className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
+            className="btn-primary"
+            style={{ width: "100%" }}
+            disabled={loading}
           >
-            Entrar
+            {loading ? "Entrando..." : "Entrar"}
           </button>
         </form>
-        <button
-          onClick={() => navigate("/cadastro")}
-          className="mt-4 text-blue-600 underline"
-        >
-          Criar conta
-        </button>
+
+        <p className="auth-footer">
+          Não tem conta?{" "}
+          <button className="btn-link" onClick={() => navigate("/cadastro")}>
+            Crie uma gratuitamente
+          </button>
+        </p>
       </div>
-    </CenteredLayout>
+    </div>
   );
 };
 
