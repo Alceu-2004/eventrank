@@ -1,127 +1,108 @@
-# 🎤 EventRank
+# EventRank
 
-**EventRank** é um sistema completo para **avaliação de artistas e eventos culturais**.
-A plataforma permite que usuários realizem avaliações, comentários e consultem rankings com base nas notas atribuídas.
+Sistema fullstack para **avaliação de eventos culturais**. Usuários podem se cadastrar, explorar eventos, deixar comentários e notas — gerando um ranking colaborativo baseado na experiência real do público.
 
-Este é um projeto **fullstack**, desenvolvido com foco em **aprendizado prático e portfólio profissional**.
+Desenvolvido como projeto de portfólio com foco em boas práticas de desenvolvimento e design profissional.
 
 ---
 
-## 📂 Estrutura do Projeto
+## Tecnologias
 
-```bash
+**Backend**
+- Java 17 · Spring Boot 3 · Spring Security · JWT
+- JPA / Hibernate · Flyway · PostgreSQL
+
+**Frontend**
+- React 19 · TypeScript · Vite
+- CSS customizado com design system (variáveis, tema dark)
+- Axios · Lucide Icons · React Router DOM
+
+**Infraestrutura**
+- Docker · Docker Compose · Maven
+
+---
+
+## Estrutura do Projeto
+
+```
 eventrank/
-├── backend/   # API REST com Spring Boot
-├── frontend/  # Interface web completa com React.js e TypeScript
-└── README.md  # Apresentação do projeto
+├── backend/              # API REST (Spring Boot)
+├── frontend/             # Interface web (React + TypeScript)
+├── start-eventrank.bat   # Script para iniciar o ambiente (Windows)
+└── stop-eventrank.bat    # Script para parar o ambiente (Windows)
 ```
 
 ---
 
-## 🧠 Tecnologias Utilizadas
+## Como Rodar
 
-* **Backend:** Java · Spring Boot · JPA · Flyway · PostgreSQL · JWT
-* **Frontend:** React.js · TypeScript · Axios · Lucide Icons · CSS customizado
-* **DevOps:** Docker · Docker Compose
-* **Ferramentas:** Maven · pgAdmin · Postman
+### Pré-requisitos
 
----
+- [Java 17](https://adoptium.net)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop)
+- [Node.js](https://nodejs.org) (v18+)
 
-## 🚀 Como Rodar o Projeto
-
-### 🔧 Pré-requisitos
-
-* Docker & Docker Compose
-* Java 23
-* Maven
-* Node.js (para o frontend)
+> **Windows:** se você tiver o PostgreSQL instalado localmente, ele pode conflitar com o Docker na porta 5432. Os scripts `.bat` já cuidam disso automaticamente.
 
 ---
 
-### 🔹 Backend com Docker Compose
+### Opção 1 — Script automático (Windows)
 
-1. Crie o arquivo `.env` a partir do modelo:
+Na raiz do projeto, clique com o botão direito em `start-eventrank.bat` e execute como **administrador**.
 
-   ```bash
-   cp backend/.env.example backend/.env
-   ```
+O script irá:
+1. Parar o PostgreSQL local (se houver) para liberar a porta 5432
+2. Subir o banco de dados via Docker
+3. Iniciar o backend em uma nova janela
+4. Iniciar o frontend em uma nova janela
 
-2. Preencha as variáveis de ambiente em `backend/.env`:
+Acesse em: `http://localhost:5173`
 
-   ```bash
-   DB_USER=usuario
-   DB_PASS=senha
-   DB_NAME=eventrank
-   DB_PORT=5432
-   ```
-
-3. Inicie os containers do Docker:
-
-   ```bash
-   docker-compose up -d
-   ```
-
-   O backend estará disponível em:
-   👉 `http://localhost:8080`
-
-   As migrations do banco de dados são aplicadas automaticamente pelo **Flyway**.
+Para parar tudo, execute `stop-eventrank.bat` como administrador.
 
 ---
 
-### 🔹 Frontend
+### Opção 2 — Manual
 
-1. Navegue até a pasta `frontend/`:
+**1. Banco de dados**
+```bash
+cd backend
+docker-compose up -d
+```
 
-   ```bash
-   cd frontend
-   ```
+**2. Backend**
+```bash
+cd backend
+./mvnw spring-boot:run
+# Windows:
+.\mvnw.cmd spring-boot:run
+```
 
-2. Instale as dependências:
+As migrations do Flyway são aplicadas automaticamente na primeira execução, incluindo dados de exemplo.
 
-   ```bash
-   npm install
-   ```
+API disponível em: `http://localhost:8080`
 
-3. Inicie a aplicação:
+**3. Frontend**
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-   ```bash
-   npm start
-   ```
-
-   A interface web estará disponível em:
-   👉 `http://localhost:5173/`
-
-   A aplicação já está integrada com o backend.
-
----
-
-### 🔹 pgAdmin (opcional)
-
-Se quiser gerenciar o banco de dados via pgAdmin:
-
-1. Configure o acesso ao PostgreSQL usando as variáveis definidas no `.env`.
-2. Conecte-se ao host `localhost` e porta `5432`.
+Interface disponível em: `http://localhost:5173`
 
 ---
 
-## 📈 Status do Projeto
+## Funcionalidades
 
-🟢 **Backend completo** — API REST funcional com PostgreSQL e Flyway
-🟢 **Frontend completo** — Interface web interativa em React + TypeScript integrada à API
-
----
-
-## 🧩 Funcionalidades
-
-* Cadastro e login de usuários com autenticação JWT
-* Avaliação e comentários de eventos
-* Consulta de eventos e rankings
-* Pesquisa e filtro de eventos
-* Menu dinâmico com opções de navegação
-* Dashboard de avaliações por evento
+- Cadastro e login com autenticação JWT
+- Listagem e busca de eventos
+- Avaliação com nota (1–5 estrelas) e comentário
+- Média de avaliações por evento
+- Interface responsiva com tema dark profissional
 
 ---
 
-## 📄 Licença
+## Licença
 
-Este projeto é de uso educacional e faz parte do portfólio pessoal de **Alceu-2004**.
+Projeto de uso educacional, parte do portfólio pessoal de **Alceu-2004**.
