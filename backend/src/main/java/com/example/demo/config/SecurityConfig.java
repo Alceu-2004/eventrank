@@ -2,6 +2,7 @@ package com.example.demo.config;
 
 import com.example.demo.security.CustomUserDetailsService;
 import com.example.demo.security.JwtAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,11 +18,16 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.http.HttpMethod;
 
+import java.util.Arrays;
+
 @Configuration
 public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    @Value("${app.cors.allowed-origins:http://localhost:5173}")
+    private String allowedOrigins;
 
     public SecurityConfig(CustomUserDetailsService userDetailsService,
                           JwtAuthenticationFilter jwtAuthenticationFilter) {
@@ -71,9 +77,12 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOriginPattern("http://localhost:5173"); 
+        Arrays.stream(allowedOrigins.split(","))
+              .map(String::trim)
+              .filter(origin -> !origin.isEmpty())
+              .forEach(config::addAllowedOriginPattern);
         config.addAllowedHeader("*");
-        config.addAllowedMethod("*"); 
+        config.addAllowedMethod("*");
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
