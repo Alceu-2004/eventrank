@@ -40,6 +40,8 @@ public class AuthService {
 
         String token = jwtUtil.generateToken(userDetails.getUsername());
 
-        return new AuthResponse(token);
+        String nome = ((com.example.demo.security.CustomUserDetails) userDetails).getUsuario().getNome();
+
+        return new AuthResponse(token, nome);
     }
 }
