@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../services/api";
 import { Search, ArrowRight, ChevronLeft, Star } from "lucide-react";
 import Header from "../components/Header";
 import CenteredLayout from "../components/CenteredLayout";
@@ -79,7 +79,7 @@ const Dashboard = () => {
 
   const carregarEventos = async () => {
     try {
-      const res = await axios.get("http://localhost:8080/eventos");
+      const res = await api.get("/eventos");
       setEventos(res.data);
     } catch {
       setErro("Não foi possível carregar os eventos.");
@@ -90,7 +90,7 @@ const Dashboard = () => {
     try {
       const token = sessionStorage.getItem("token");
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
-      const res = await axios.get(`http://localhost:8080/avaliacoes/${eventoId}`, { headers });
+      const res = await api.get(`/avaliacoes/${eventoId}`, { headers });
       setAvaliacoes(res.data);
     } catch {
       setErro("Não foi possível carregar as avaliações.");
@@ -111,8 +111,8 @@ const Dashboard = () => {
     setLoading(true);
     setErro("");
     try {
-      await axios.post(
-        `http://localhost:8080/avaliacoes/${selecionado.id}`,
+      await api.post(
+        `/avaliacoes/${selecionado.id}`,
         { comentario, nota },
         { headers: { Authorization: `Bearer ${token}` } }
       );

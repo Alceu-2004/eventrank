@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../services/api";
 
 const Cadastro = () => {
   const navigate = useNavigate();
@@ -33,8 +33,8 @@ const Cadastro = () => {
 
     setLoading(true);
     try {
-      await axios.post("http://localhost:8080/usuarios", { nome, email, senha });
-      const tokenResponse = await axios.post("http://localhost:8080/login", { email, senha });
+      await api.post("/usuarios", { nome, email, senha });
+      const tokenResponse = await api.post("/login", { email, senha });
       sessionStorage.setItem("token", tokenResponse.data.token);
       sessionStorage.setItem("nomeUsuario", tokenResponse.data.nome ?? nome);
       navigate("/dashboard");
